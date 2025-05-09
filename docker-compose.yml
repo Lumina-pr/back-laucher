@@ -4,16 +4,16 @@ services:
     ports:
       - "8222:8222"
 
-  # client-gateway:
-  #   build: ./client-gateway
-  #   ports:
-  #     - ${CLIENT_GATEWAY_PORT}:3000
-  #   volumes:
-  #     - ./client-gateway/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=${CLIENT_GATEWAY_PORT}
-  #     - NATS_SERVERS=nats://nats-server:4222
+  client-gateway:
+    build: ./client-gateway
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:3000
+    volumes:
+      - ./client-gateway/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
 
   # auth-ms:
   #   build: ./auth-ms
@@ -36,15 +36,15 @@ services:
   #     - NATS_SERVERS=nats://nats-server:4222
   #     - DATABASE_URL=${DEVICES_DATABASE_URL}
 
-  mqtt-broker:
-    image: eclipse-mosquitto:latest
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+  # mqtt-broker:
+  #   image: eclipse-mosquitto:latest
+  #   ports:
+  #     - "1883:1883"
+  #     - "9001:9001"
+  #   volumes:
+  #     - ./mosquitto/config:/mosquitto/config
+  #     - ./mosquitto/data:/mosquitto/data
+  #     - ./mosquitto/log:/mosquitto/log
 
   device-data-ms:
     build: ./device-data-ms
@@ -53,6 +53,26 @@ services:
     command: npm run start:dev
     environment:
       - NATS_SERVERS=nats://nats-server:4222
+
+
+  device-control-ms:
+    build: ./device-control-ms
+    volumes:
+      - ./device-control-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
       - MQTT_URL=${MQTT_URL}
-    depends_on:
-      - mqtt-broker
+    # depends_on:
+    #   - mqtt-broker
+  
+  websocket-gateway:
+    build: ./websocket-gateway
+    ports:
+      - ${WEBSOCKET_GATEWAY_PORT}:${WEBSOCKET_GATEWAY_PORT} 
+    volumes:
+      - ./websocket-gateway/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=${WEBSOCKET_GATEWAY_PORT}  # Define PORT=3001 dentro del contenedor
+      - NATS_SERVERS=nats://nats-server:4222

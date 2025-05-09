@@ -12,3 +12,9 @@
 [submodule "device-data-ms"]
 	path = device-data-ms
 	url = git@github.com:Lumina-pr/device-data-ms.git
+[submodule "device-control-ms"]
+	path = device-control-ms
+	url = git@github.com:Lumina-pr/device-control-ms.git
+[submodule "websocket-gateway"]
+	path = websocket-gateway
+	url = git@github.com:Lumina-pr/websocket-gateway.git
