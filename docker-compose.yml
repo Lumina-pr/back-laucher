@@ -15,26 +15,26 @@ services:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=nats://nats-server:4222
 
-  # auth-ms:
-  #   build: ./auth-ms
-  #   volumes:
-  #     - ./auth-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=3000
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=${AUTH_DATABASE_URL}
-  #     - JWT_SECRET=${JWT_SECRET}
-  #     - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+  auth-ms:
+    build: ./auth-ms
+    volumes:
+      - ./auth-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
 
-  # devices-ms:
-  #   build: ./devices-ms
-  #   volumes:
-  #     - ./devices-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=${DEVICES_DATABASE_URL}
+  devices-ms:
+    build: ./devices-ms
+    volumes:
+      - ./devices-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${DEVICES_DATABASE_URL}
 
   # mqtt-broker:
   #   image: eclipse-mosquitto:latest
@@ -46,13 +46,13 @@ services:
   #     - ./mosquitto/data:/mosquitto/data
   #     - ./mosquitto/log:/mosquitto/log
 
-  device-data-ms:
-    build: ./device-data-ms
-    volumes:
-      - ./device-data-ms/src:/usr/src/app/src
-    command: npm run start:dev
-    environment:
-      - NATS_SERVERS=nats://nats-server:4222
+  # device-data-ms:
+  #   build: ./device-data-ms
+  #   volumes:
+  #     - ./device-data-ms/src:/usr/src/app/src
+  #   command: npm run start:dev
+  #   environment:
+  #     - NATS_SERVERS=nats://nats-server:4222
 
 
   device-control-ms:
