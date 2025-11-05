@@ -58,7 +58,6 @@ services:
   #   environment:
   #     - NATS_SERVERS=nats://nats-server:4222
 
-
   device-control-ms:
     build: ./device-control-ms
     volumes:
@@ -66,21 +65,22 @@ services:
     command: npm run start:dev
     environment:
       - NATS_SERVERS=nats://nats-server:4222
-      - MQTT_URL=${MQTT_URL}
+      - MQTT_BROKER_URL=${MQTT_BROKER_URL}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
     # depends_on:
     #   - mqtt-broker
-  
+
   websocket-gateway:
     build: ./websocket-gateway
     ports:
-      - ${WEBSOCKET_GATEWAY_PORT}:${WEBSOCKET_GATEWAY_PORT} 
+      - ${WEBSOCKET_GATEWAY_PORT}:${WEBSOCKET_GATEWAY_PORT}
     volumes:
       - ./websocket-gateway/src:/usr/src/app/src
     command: npm run start:dev
     environment:
-      - PORT=${WEBSOCKET_GATEWAY_PORT}  # Define PORT=3001 dentro del contenedor
+      - PORT=${WEBSOCKET_GATEWAY_PORT} # Define PORT=3001 dentro del contenedor
       - NATS_SERVERS=nats://nats-server:4222
-
 
   redis:
     image: redis:latest
@@ -89,3 +89,31 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
       - "6379:6379"
+
+  mongo-auth:
+    image: mongo:latest
+    container_name: mongo-auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_AUTH_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_AUTH_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_AUTH_DB}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-auth-data:/data/db
+
+  mongo-devices:
+    image: mongo:latest
+    container_name: mongo-devices
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DEVICES_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DEVICES_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DEVICES_DB}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-devices-data:/data/db
+
+volumes:
+  mongo-auth-data:
+  mongo-devices-data:
